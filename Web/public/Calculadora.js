@@ -4,7 +4,6 @@ var decimal2 = false;
 var secondNumber = null;
 var segundo = false;
 var operacion = null;
-var porciento1 = null;
 var porciento2 = null;
 var hayporcentaje = false;
 
@@ -25,7 +24,8 @@ function calcular(simbolo) {
             } else if (firstNumber == null && +simbolo === 0) {
                 firstNumber = null;
             } else {
-                inputNumero.value = inputNumero.value + simbolo;
+                firstNumber = firstNumber + simbolo;
+                inputNumero.value = firstNumber;
             }
         }
     }
@@ -40,7 +40,11 @@ function calcular(simbolo) {
                 operacion = simbolo;
 
             } else {
-                secondNumber = '-';
+                if (operacion !== '-') {
+                    secondNumber = '-';
+                } else {
+                    operacion = simbolo;
+                }
             }
         } else {
             operacion = simbolo;
@@ -51,7 +55,8 @@ function calcular(simbolo) {
     if (segundo === true) {
         if (simbolo === '.' && decimal2 === false) {
             if (secondNumber !== null) {
-                inputNumero.value = inputNumero.value + simbolo;
+                secondNumber = secondNumber + simbolo;
+                inputNumero.value = secondNumber;
                 decimal2 = true;
             }
         }
@@ -62,7 +67,8 @@ function calcular(simbolo) {
             } else if (secondNumber == null && +simbolo === 0) {
                 secondNumber = null;
             } else {
-                inputNumero.value = inputNumero.value + simbolo
+                secondNumber = secondNumber + simbolo;
+                inputNumero.value = secondNumber;
             }
         }
     }
@@ -87,53 +93,37 @@ function calcular(simbolo) {
     console.log(secondNumber);
     console.log(segundo);
     console.log(operacion);
-    console.log(porciento1);
     console.log(porciento2);
 }
 
 function resultado() {
     var inputNumero = document.getElementById("displayValue");
 
-    if (hayporcentaje === false) {
-        if (firstNumber !== null && secondNumber !== null) {
-            switch (this.operacion) {
-                case 'x':
-                    firstNumber = parseInt(firstNumber, 10) * (parseInt(secondNumber, 10));
-                    break;
-                case '/':
-                    firstNumber = parseInt(firstNumber, 10) / (parseInt(secondNumber, 10));
-                    break;
-                case '-':
-                    firstNumber = parseInt(firstNumber, 10) - (parseInt(secondNumber, 10));
-                    break;
-                case '+':
-                    firstNumber = parseInt(firstNumber, 10) + parseInt(secondNumber, 10);
-                    break
-            }
-            secondNumber = null;
-            inputNumero.value = firstNumber;
 
-        } else {
-            operacion = null;
+    if (firstNumber !== null && secondNumber !== null) {
+        switch (this.operacion) {
+            case 'x':
+                firstNumber = parseFloat(firstNumber, 10) * (parseFloat(secondNumber, 10));
+                break;
+            case '/':
+                firstNumber = parseFloat(firstNumber, 10) / (parseFloat(secondNumber, 10));
+                break;
+            case '-':
+                firstNumber = parseFloat(firstNumber, 10) - (parseFloat(secondNumber, 10));
+                break;
+            case '+':
+                firstNumber = parseFloat(firstNumber, 10) + parseFloat(secondNumber, 10);
+                break
         }
+        secondNumber = null;
+        inputNumero.value = firstNumber;
+        operacion = null;
     } else {
-        if (porciento1 !== null) {
-            firstNumber = firstNumber * porciento1;
-        }
-        if (porciento2 !== null) {
-            if (secondNumber !== null) {
-                secondNumber = secondNumber * porciento2
-            }
-            else {
-                secondNumber=firstNumber*porciento2
-            }
-        }
-        porciento2=null;
-        porciento1=null;
-        this.resultado();
+        operacion = null;
     }
 
 }
+
 
 function changeSign() {
     var inputNumero = document.getElementById("displayValue");
@@ -157,22 +147,18 @@ function reset() {
 
 function porcentaje() {
 
-
     if (secondNumber !== null) {
         porciento2 = parseInt(secondNumber, 10) / 100;
-        secondNumber = null;
+        secondNumber = firstNumber * porciento2;
+        this.porciento2 = null;
+        this.resultado();
     } else if (firstNumber !== null) {
-        console.log("skere")
-        porciento1 = parseInt(firstNumber, 10) / 100;
-        firstNumber = null;
-    } else {
-        porciento1 = 1;
+        porciento2 = parseInt(firstNumber, 10) / 100;
+        secondNumber = porciento2;
+        operacion = 'x';
+        firstNumber = 1;
+        this.resultado();
     }
 
-    if (hayporcentaje !== true) {
-        var inputNumero = document.getElementById("displayValue");
-        inputNumero.value = inputNumero.value + "%";
-        hayporcentaje = true;
-    }
 
 }
